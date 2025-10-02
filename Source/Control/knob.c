@@ -32,9 +32,9 @@
 #define NEG_INF         0xFF800000ul
 
 #if __APPLE__
-char def_font[100] = "Menlo";
+static char def_font[100] = "Menlo";
 #else
-char def_font[100] = "DejaVu Sans Mono";
+static char def_font[100] = "DejaVu Sans Mono";
 #endif
 
 typedef struct _edit_proxy{

@@ -8,9 +8,9 @@
 #define MAX_ITEMS 1024
 
 #if __APPLE__
-char def_font[100] = "Menlo";
+static char def_font[100] = "Menlo";
 #else
-char def_font[100] = "DejaVu Sans Mono";
+static char def_font[100] = "DejaVu Sans Mono";
 #endif
 
 static t_class *menu_class, *edit_proxy_class;
