@@ -1,0 +1,12 @@
+
+void outmidi_byte(int port, int value); // defined in libpd/libpd_wrapper/s_libpdmidi.c
+
+void sys_putmidibyte(int port, int value) {
+    outmidi_byte(port, value);
+}
+
+@SETUP_DECLS@
+
+void else_subset_setup() {
+@SETUP_CALLS@
+}
