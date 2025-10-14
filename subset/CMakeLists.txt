@@ -46,7 +46,14 @@ set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
 # instead of including ${ELSE_SOURCE_DIR}/Source/Shared/shared.cmake
 
 file(GLOB SHARED_SOURCES
-    ${ELSE_SOURCE_DIR}/Source/Shared/*.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/buffer.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/elsefile.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/magic.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/mifi.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/mouse_gui.c
+    ${ELSE_SOURCE_DIR}/Source/Shared/random.c
+    # ./Source/Shared/s_elseutf8.c is replaced to avoid duplicate symbol errors
+    ${CMAKE_CURRENT_SOURCE_DIR}/s_elseutf8.c
     ${ELSE_SOURCE_DIR}/Source/Shared/libsamplerate/*.c
 )
 
