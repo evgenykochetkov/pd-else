@@ -57,23 +57,13 @@ file(GLOB SHARED_SOURCES
     ${ELSE_SOURCE_DIR}/Source/Shared/libsamplerate/*.c
 )
 
-add_library(else_shared STATIC ${SHARED_SOURCES})
-target_compile_definitions(else_shared PRIVATE $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>)
-set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_STATIC_LIBRARIES else_shared)
-
-if(APPLE)
-    target_link_options(else_shared PRIVATE -undefined dynamic_lookup)
-elseif(WIN32)
-	target_link_libraries(else_shared PRIVATE ws2_32)
-endif()
-
 include_directories(${PD_SOURCES_PATH} ${ELSE_SOURCE_DIR}/Source/Shared)
 
 
 
 set(SETUP_DECLS "")
 set(SETUP_CALLS "")
-set(LIBS_LIST)
+set(EXTERNALS_SOURCES)
 
 foreach(EXTERNAL_NAME ${PICKED_ELSE_EXTERNALS})
     string(FIND ${EXTERNAL_NAME} "~" NAME_HAS_TILDE)
@@ -83,11 +73,7 @@ foreach(EXTERNAL_NAME ${PICKED_ELSE_EXTERNALS})
         set(SOURCE_SUBDIR "Control")
     endif()
 
-    string(REPLACE "~" "_tilde" TARGET_NAME "${EXTERNAL_NAME}")
-
-    add_library(${TARGET_NAME} STATIC ${ELSE_SOURCE_DIR}/Source/${SOURCE_SUBDIR}/${EXTERNAL_NAME}.c)
-    target_compile_definitions(${TARGET_NAME} PRIVATE $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>)
-    list(APPEND LIBS_LIST ${TARGET_NAME})
+    list(APPEND EXTERNALS_SOURCES ${ELSE_SOURCE_DIR}/Source/${SOURCE_SUBDIR}/${EXTERNAL_NAME}.c)
 
     string(FIND ${EXTERNAL_NAME} "." NAME_HAS_DOT)
     if(NAME_HAS_DOT EQUAL -1)
@@ -103,27 +89,30 @@ endforeach(EXTERNAL_NAME)
 
 # manually add [lb] and [s2f~] from Extra/Aliases
 # because they are used in a lot of abstractions
-add_library(lb STATIC ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/lb.c)
-target_compile_definitions(lb PRIVATE $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>)
-list(APPEND LIBS_LIST lb)
+list(APPEND EXTERNALS_SOURCES ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/lb.c)
 string(APPEND SETUP_DECLS "void lb_setup();\n")
 string(APPEND SETUP_CALLS "    lb_setup();\n")
 
-add_library(s2f_tilde STATIC ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/s2f~.c)
-target_compile_definitions(s2f_tilde PRIVATE $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>)
-list(APPEND LIBS_LIST s2f_tilde)
+list(APPEND EXTERNALS_SOURCES ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/s2f~.c)
 string(APPEND SETUP_DECLS "void s2f_tilde_setup();\n")
 string(APPEND SETUP_CALLS "    s2f_tilde_setup();\n")
 
 
 
 configure_file(else_subset.c.in ${CMAKE_CURRENT_BINARY_DIR}/else_subset.c)
-add_library(else_subset STATIC ${CMAKE_CURRENT_BINARY_DIR}/else_subset.c)
+add_library(else_subset STATIC
+    ${CMAKE_CURRENT_BINARY_DIR}/else_subset.c
+    ${SHARED_SOURCES}
+    ${EXTERNALS_SOURCES}
+)
+target_compile_definitions(else_subset PRIVATE $<$<BOOL:${PD_MULTI}>:PDINSTANCE=1 PDTHREADS=1>)
+if(APPLE)
+    # indicate that unresolved symbols will be resolved at runtime
+    target_link_options(else_subset PRIVATE -undefined dynamic_lookup)
+elseif(WIN32)
+    target_link_libraries(else_subset PRIVATE ws2_32)
+endif()
 if(MSVC)
     # TODO: test this on an actual windows machine
     set_property(TARGET else_subset APPEND_STRING PROPERTY LINK_FLAGS "/export:else_subset_setup")
 endif()
-foreach(LIB_NAME ${LIBS_LIST})
-    target_link_libraries(else_subset ${LIB_NAME})
-endforeach()
-target_link_libraries(else_subset else_shared)
