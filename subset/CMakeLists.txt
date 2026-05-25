@@ -87,13 +87,14 @@ foreach(EXTERNAL_NAME ${PICKED_ELSE_EXTERNALS})
     string(APPEND SETUP_CALLS "    ${EXPORT_FN_NAME}();\n")
 endforeach(EXTERNAL_NAME)
 
-# manually add [lb] and [s2f~] from Extra/Aliases
-# because they are used in a lot of abstractions
+# manually add [lb] from Extra/Aliases
+# because it is used in a lot of abstractions
 list(APPEND EXTERNALS_SOURCES ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/lb.c)
 string(APPEND SETUP_DECLS "void lb_setup();\n")
 string(APPEND SETUP_CALLS "    lb_setup();\n")
 
-list(APPEND EXTERNALS_SOURCES ${ELSE_SOURCE_DIR}/Source/Extra/Aliases/s2f~.c)
+# [s2f~] alias is defined in Source/Audio/sig2float~.c
+# but we still need to call the setup function
 string(APPEND SETUP_DECLS "void s2f_tilde_setup();\n")
 string(APPEND SETUP_CALLS "    s2f_tilde_setup();\n")
 

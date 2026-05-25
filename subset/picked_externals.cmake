@@ -73,6 +73,8 @@ set(PICKED_ELSE_EXTERNALS
     fm~
     fold~
     follow~
+    formant~
+    formlet~
     freq.shift~
     function~
     gate2imp~
@@ -110,6 +112,7 @@ set(PICKED_ELSE_EXTERNALS
     median~
     merge~
     mix~
+    # moog~ — "based on [bob~] and VCV's VCF"
     mov.avg~
     mov.rms~
     mtx.mc~
@@ -118,6 +121,7 @@ set(PICKED_ELSE_EXTERNALS
     numbox~
     nyquist~
     op~
+    paf~
     pan.mc~
     pan.stereo~
     pan~
@@ -142,6 +146,7 @@ set(PICKED_ELSE_EXTERNALS
     pulse~
     pulsecount~
     pulsediv~
+    # pvretune~ — depends on FFTease (which is MIT-licensed, but I don't want to deal with extra deps now)
     quad~
     quantizer~
     ramp~
@@ -202,6 +207,7 @@ set(PICKED_ELSE_EXTERNALS
     trunc~
     unmerge~
     velvet~
+    # vosim~ — "porres basically stole this from shadylib", "this is still experimental"
     vsaw~
     vu~
     wavetable~
@@ -241,6 +247,7 @@ set(PICKED_ELSE_EXTERNALS
     canvas.setname
     canvas.vis
     canvas.zoom
+    car2pol
     ceil
     cents2ratio
     chance
@@ -254,11 +261,13 @@ set(PICKED_ELSE_EXTERNALS
     default
     delace
     dollsym
+    elapsed
     # else — does not do much in libpd; calls lua_setup. TODO: maybe stub lua_setup() just like sys_putmidibyte?
     factor
     float2bits
     floor
     fold
+    fonts
     fontsize
     format
     function
@@ -271,11 +280,13 @@ set(PICKED_ELSE_EXTERNALS
     knob
     lace
     limit
+    listspread
     loadbanger
     loop
     merge
     message
     messbox
+    messcoll
     metronome
     midi
     mouse
@@ -297,6 +308,7 @@ set(PICKED_ELSE_EXTERNALS
     pgm.out
     pic
     pipe2
+    pol2car
     popmenu
     properties
     ptouch.in
@@ -312,6 +324,7 @@ set(PICKED_ELSE_EXTERNALS
     receiver
     rescale
     retrieve
+    robin
     rint
     route2
     routeall
@@ -329,12 +342,14 @@ set(PICKED_ELSE_EXTERNALS
     #     - sample~
     #     - brane.m~
     #   none of the abstractions have any dependants.
+    shift
     slice
     sort
     spread
     suspedal
     symbol2any
     tabreader
+    tempo
     touch.in
     touch.out
     trunc
